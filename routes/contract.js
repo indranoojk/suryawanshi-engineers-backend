@@ -68,4 +68,4 @@ ContractRouter.delete('/deletecontract/:id', fetchadmin, async(req, res) => {
 })
 
 
-module.exports = ContractRouter;
+module.exports = {ContractRouter};

@@ -125,4 +125,4 @@ AdminRouter.post('/getadmin', fetchadmin, async (req, res) => {
 )
 
 // Used to export the AdminRouter function to the other pages
-module.exports = AdminRouter;
+module.exports = {AdminRouter};
