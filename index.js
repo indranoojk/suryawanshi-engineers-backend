@@ -22,7 +22,7 @@ app.use('/api/contract', require('./routes/contract'))
 app.listen(port, async () => {
     try {
         await connectToMongo;
-        console.log(colors.bgYellow(`connectd to mongo db`));
+        console.log(colors.bgYellow(`connected to mongo db`));
       } catch (error) {
         console.log(colors.bgRed("Error in connecting mongoDb"));
       }
