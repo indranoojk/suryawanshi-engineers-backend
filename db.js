@@ -7,10 +7,7 @@ const mongoURL = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONG
 
 // Connecting to the database
 const connectToMongo = () => {
-    mongoose.connect(mongoURL, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
+    mongoose.connect(mongoURL);
 }
 
 module.exports = connectToMongo;
