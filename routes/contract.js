@@ -1,12 +1,12 @@
 const express = require('express');
-const router = express.Router();
+const ContractRouter = express.Router();
 const Contract = require('../models/Contract');
 const { body, validationResult } = require('express-validator');
 var fetchadmin = require('../middleware/fetchadmin');
 
 
 // Route 1: Get all the contracts using: GET "/api/contract/fetchallcontracts".
-router.get('/fetchallcontracts', fetchadmin, async(req, res) => {
+ContractRouter.get('/fetchallcontracts', fetchadmin, async(req, res) => {
     try {
         const contracts = await Contract.find({ admin: req.admin.id });
         res.json(contracts);
@@ -17,7 +17,7 @@ router.get('/fetchallcontracts', fetchadmin, async(req, res) => {
 })
 
 // Route 2: Add a new Contract using: POST "/api/contract/addcontract".
-router.post('/addcontract', fetchadmin, [
+ContractRouter.post('/addcontract', fetchadmin, [
     body("firstname", "Enter a valid first name").isLength({ min:3 }),
     body("lastname", "Enter a valid last name").isLength({ min:3 }),
     body("email", "Enter a valid email").isEmail(),
@@ -45,7 +45,7 @@ router.post('/addcontract', fetchadmin, [
 
 
 // Route 3: Delete an existing Contract using: DELETE "/api/contract/delcontract".
-router.delete('/deletecontract/:id', fetchadmin, async(req, res) => {
+ContractRouter.delete('/deletecontract/:id', fetchadmin, async(req, res) => {
 
     try {
         // Find the contract to be deleted and delete it.
@@ -68,4 +68,4 @@ router.delete('/deletecontract/:id', fetchadmin, async(req, res) => {
 })
 
 
-module.exports = router;
+module.exports = ContractRouter;

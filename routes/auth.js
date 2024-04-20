@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const AdminRouter = express.Router();
 const Admin = require('../models/Admin');
 // this imports the validationRequest from express-validator
 const { body, validationResult } = require('express-validator');
@@ -11,7 +11,7 @@ const JWT_SECRET = 'DevelopedbyIndr@';
 
 
 // Route 1: Creating an Admin using: POST "/api/auth/createadmin". 
-router.post('/createadmin',
+AdminRouter.post('/createadmin',
  [
     body("name", "Enter a valid name").isLength({ min: 5 }),
     body("email", "Enter a valid email").isEmail(),
@@ -65,7 +65,7 @@ router.post('/createadmin',
 
 
 // Route 2: Authenticate an Admin using: POST "/api/auth/login".
-router.post(
+AdminRouter.post(
     '/login',
     [
         body("email", "Enter a valid email").isEmail(),
@@ -112,7 +112,7 @@ router.post(
 
 
 // Route 3: Get loggedIn Admin details using: POST "/api/auth/getadmin".
-router.post('/getadmin', fetchadmin, async (req, res) => {
+AdminRouter.post('/getadmin', fetchadmin, async (req, res) => {
     try {
         const adminId = req.admin.id;
         const admin = await Admin.findById(adminId).select("-password");
@@ -124,5 +124,5 @@ router.post('/getadmin', fetchadmin, async (req, res) => {
 }
 )
 
-// Used to export the router function to the other pages
-module.exports = router;
+// Used to export the AdminRouter function to the other pages
+module.exports = AdminRouter;

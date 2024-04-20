@@ -5,33 +5,27 @@ var cors = require('cors')
 const colors = require("colors");
 const { AdminRouter } = require('./routes/auth')
 const { ContractRouter } = require('./routes/contract')
-const { auth } = require('./middleware/fetchadmin')
+const { fetchadmin } = require('./middleware/fetchadmin')
 
 connectToMongo();
 const app = express();
 
-// Using port 5000 because our react app will run on port 3000
 const port = process.env.PORT;
 
 app.use(cors())
 app.use(express.json())
 
-// app.get('/', (req, res) => {
-//   res.send('hello world, this is me')
-// })
-
 
 app.use("/admin", AdminRouter);
 
 
-// // Available routes
 app.use('/api/auth', require('./routes/auth'))
 app.use('/api/contract', require('./routes/contract'))
 
 
-app.use(auth)
+app.use(fetchadmin)
 
-app.use("/admin", AdminRouter);
+app.use("/contract", ContractRouter);
 
 
 app.listen(port, async () => {
