@@ -1,5 +1,4 @@
 const express = require('express');
-const router = express.Router();
 const colors = require("colors");
 const connectToMongo = require('./db');
 var cors = require('cors');
@@ -8,7 +7,6 @@ const { ContractRouter } = require('./routes/contract');
 const { fetchadmin } = require('./middleware/fetchadmin');
 require('dotenv').config();
 
-connectToMongo();
 const app = express();
 
 const port = process.env.PORT;
@@ -24,7 +22,7 @@ app.use('/api/auth', require('./routes/auth'))
 app.use('/api/contract', require('./routes/contract'))
 
 
-router.use(fetchadmin)
+app.use(fetchadmin)
 
 app.use("/contract", ContractRouter);
 
