@@ -18,4 +18,4 @@ const fetchadmin = async (req, res, next) => {
     }
 }
 
-module.exports = {fetchadmin};
+module.exports = fetchadmin;

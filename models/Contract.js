@@ -41,4 +41,5 @@ const ContractSchema = new Schema({
     }
 });
 
-module.exports = mongoose.model('contract', ContractSchema);
+const Contract = mongoose.model('contract', ContractSchema);
+module.exports = Contract;
