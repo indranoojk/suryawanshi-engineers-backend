@@ -6,8 +6,8 @@ const mongoose = require('mongoose');
 const mongoURL = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}/${process.env.MONGO_DBNAME}`;
 
 // Connecting to the database
-const connectToMongo = () => {
-    mongoose.connect(mongoURL).then(() => {
+const connectToMongo = async () => {
+    await mongoose.connect(mongoURL).then(() => {
       console.log("Connected to MongoDB Successfully");
     })
     .catch((err) => {
