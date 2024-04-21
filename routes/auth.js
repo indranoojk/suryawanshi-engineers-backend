@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 var fetchadmin = require('../middleware/fetchadmin');
 
-const JWT_SECRET = 'DevelopedbyIndr@';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 
 // Route 1: Creating an Admin using: POST "/api/auth/createadmin". 
