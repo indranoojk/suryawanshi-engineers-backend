@@ -23,19 +23,21 @@ router.post('/addcontract', fetchadmin, [
     body("email", "Enter a valid email").isEmail(),
     body("phone", "Enter a valid phone number with 10 digits").isLength(10),
     body("domain"),
+    body("address", "Enter a valid address").isLength({ min:2 }),
     body("city", "Enter a valid city").isLength({ min:2 }),
+    body("state"),
     body("width", "Enter a valid width").isLength({ min:2 }),
     body("length", "Enter a valid length").isLength({ min:2 })
 ], async (req, res) => {
     try {
-        const { firstname, lastname, email, phone, domain, city, width, length,  query } = req.body;
+        const { firstname, lastname, email, phone, domain, address, city, state, width, length,  query } = req.body;
         const errors = validationResult(req);
         if(!errors.isEmpty()){
             return res.status(400).json({error: errors.array()});
         }
 
         const contract = new Contract({
-            firstname, lastname, email, phone, domain, city, width, length,  query, admin: req.admin.id
+            firstname, lastname, email, phone, domain, address, city, state, width, length,  query, admin: req.admin.id
         })
         const savedContract = await contract.save();
         res.json(savedContract);
