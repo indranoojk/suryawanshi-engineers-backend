@@ -20,7 +20,7 @@ const ContractSchema = new Schema({
         unique: true
     },
     phone: {
-        type: String,
+        type: Number,
         required: true,
     },
     domain: {
@@ -29,6 +29,14 @@ const ContractSchema = new Schema({
     },
     city: {
         type: String,
+        required: true
+    },
+    width: {
+        type: Number,
+        required: true
+    },
+    length: {
+        type: Number,
         required: true
     },
     query: {
