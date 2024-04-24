@@ -24,13 +24,13 @@ router.post('/addproject', fetchadmin, [
 ], async (req, res) => {
     try {
 
-        const { title, image, content } = req.body;
+        const { title, content } = req.body;
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
         const project = new Project({
-            title, image, content, admin: req.admin.id
+            title, content, admin: req.admin.id
         })
         const savedProject = await project.save();
         res.json(savedProject);
@@ -44,12 +44,11 @@ router.post('/addproject', fetchadmin, [
 
 // ROUTE 3: Update an existing Project using: PUT "/api/projects/updateProject". login required
 router.put('/updateproject/:id', fetchadmin, async (req, res) => {
-    const { title, image, content } = req.body;
+    const { title, content } = req.body;
     // Create a newProject Object
     try {
         const newProject = {};
         if (title) { newProject.title = title }
-        if (image) { newProject.image = image }
         if (content) { newProject.content = content }
 
         // Find the Project to be updated and update it
