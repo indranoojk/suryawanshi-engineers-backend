@@ -1,5 +1,5 @@
 const express = require("express")
-const Image = require("../model/image")
+const Image = require("../models/Image")
 const multer = require('multer');
 const path = require('path');
 
