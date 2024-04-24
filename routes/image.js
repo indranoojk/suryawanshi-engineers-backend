@@ -7,7 +7,7 @@ const router = express.Router()
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, `../Images/`)
+    cb(null, `../Images`)
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
@@ -20,19 +20,27 @@ const upload = multer({ storage: storage })
 
 
 router.post("/upload", upload.single('image')  ,async(req, res)=>{
-    const {name} = req.body
-    console.log(req.file)
-    const filename = req.file ? req.file.filename : null
-    const path = req.file ?  req.file.destination : null
-    console.log(req.file)
+    var img = fs.readFileSync(req.file.path);
+
+    var encode_image = img.toString('base64');
+
+    // Define a JSON Object for the image
     
-    try {
-        const newImage = new Image({filename, name, path})
-        await newImage.save()
-        res.status(200).json({msg:`${filename} image uploaded success`, success:true})
-    } catch (error) {
-         res.status(500).json({msg:`${filename} NOT uploaded`, success:false})
-    }
+    var finalImage = {
+      contentType: req.file.mimetype,
+      path: req.file.path,
+      image: new Buffer(encode_image, 'base64')
+    };
+
+    // insert the image to the database
+
+    db.collection('image').insertOne(finalImage, (err, result) => {
+      console.log(result);
+
+      if(err) return console.log(err)
+      
+      console.log("Saved to database");
+    })
 })
 
 router.get("/image/:id", async (req, res) => {
