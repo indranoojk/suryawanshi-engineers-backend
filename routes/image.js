@@ -19,7 +19,7 @@ const upload = multer({ storage: storage })
 
 
 
-router.post("/upload", upload.single('image')  ,async(req, res)=>{
+router.post("/upload", upload.single('imageUrl')  ,async(req, res)=>{
     var img = fs.readFileSync(req.file.path);
 
     var encode_image = img.toString('base64');
@@ -29,12 +29,12 @@ router.post("/upload", upload.single('image')  ,async(req, res)=>{
     var finalImage = {
       contentType: req.file.mimetype,
       path: req.file.path,
-      image: new Buffer(encode_image, 'base64')
+      imageUrl: new Buffer(encode_image, 'base64')
     };
 
     // insert the image to the database
 
-    db.collection('image').insertOne(finalImage, (err, result) => {
+    db.collection('imageUrl').insertOne(finalImage, (err, result) => {
       console.log(result);
 
       if(err) return console.log(err)
