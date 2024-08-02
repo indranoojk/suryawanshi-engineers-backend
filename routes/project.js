@@ -20,17 +20,18 @@ router.get('/fetchallprojects', fetchadmin, async (req, res) => {
 // ROUTE 2: Add a new Project using: POST "/api/projects/addProject". login required
 router.post('/addproject', fetchadmin, [
     body("title", "Enter a valid title").isLength({ min: 5 }),
+    body("description", "Enter a valid description").isLength({ min: 5 }),
     body("content", "Content must be atleast 15 characters").isLength({ min: 15 }),
 ], async (req, res) => {
     try {
 
-        const { title, content } = req.body;
+        const { title, description, content } = req.body;
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
         const project = new Project({
-            title, content, admin: req.admin.id
+            title, description, content, admin: req.admin.id
         })
         const savedProject = await project.save();
         res.json(savedProject);
@@ -44,11 +45,12 @@ router.post('/addproject', fetchadmin, [
 
 // ROUTE 3: Update an existing Project using: PUT "/api/projects/updateProject". login required
 router.put('/updateproject/:id', fetchadmin, async (req, res) => {
-    const { title, content } = req.body;
+    const { title, description, content } = req.body;
     // Create a newProject Object
     try {
         const newProject = {};
         if (title) { newProject.title = title }
+        if (description) { newProject.description = description }
         if (content) { newProject.content = content }
 
         // Find the Project to be updated and update it
