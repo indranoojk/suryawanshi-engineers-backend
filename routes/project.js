@@ -8,7 +8,8 @@ const path = require('path');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, './public/uploads/');
+    // cb(null, "./public/uploads");
+    cb(null, "../frontend/src/assets/images/");
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + '-' + file.originalname);
@@ -39,13 +40,13 @@ router.post('/addproject', upload.single('image'), fetchadmin, [
     try {
 
         const { title, description, content } = req.body;
-        const image = req.file.filename; // Assuming image is uploaded successfully
+        const image = req.file.path; // Assuming image is uploaded successfully
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
         const project = new Project({
-            title, description, content, image: image, admin: req.admin.id
+            title, description, content, image, admin: req.admin.id
         })
         const savedProject = await project.save();
         res.json(savedProject);
