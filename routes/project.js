@@ -3,20 +3,6 @@ const router = express.Router();
 const Project = require('../models/Project');
 const { body, validationResult } = require('express-validator');
 var fetchadmin = require('../middleware/fetchadmin');
-const multer = require('multer');
-const path = require('path');
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    // cb(null, "./public/uploads");
-    cb(null, "../frontend/src/assets/images/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
-  }
-});
-
-const upload = multer({ storage });
 
 
 // ROUTE 1: Get All the projects using: GET "/api/projects/getadmin". login required
@@ -32,21 +18,21 @@ router.get('/fetchallprojects', fetchadmin, async (req, res) => {
 })
 
 // ROUTE 2: Add a new Project using: POST "/api/projects/addProject". login required
-router.post('/addproject', upload.single('image'), fetchadmin, [
+router.post('/addproject', fetchadmin, [
     body("title", "Enter a valid title").isLength({ min: 5 }),
     body("description", "Enter a valid description").isLength({ min: 5 }),
     body("content", "Content must be atleast 15 characters").isLength({ min: 15 }),
-], async (req, res, upload) => {
+], async (req, res) => {
     try {
 
         const { title, description, content } = req.body;
-        const image = req.file.path; // Assuming image is uploaded successfully
+        // const image = req.file.path; // Assuming image is uploaded successfully
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
         const project = new Project({
-            title, description, content, image, admin: req.admin.id
+            title, description, content, admin: req.admin.id
         })
         const savedProject = await project.save();
         res.json(savedProject);
