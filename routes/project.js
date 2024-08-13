@@ -26,7 +26,6 @@ router.post('/addproject', fetchadmin, [
     try {
 
         const { title, description, content } = req.body;
-        // const image = req.file.path; // Assuming image is uploaded successfully
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
