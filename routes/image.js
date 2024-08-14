@@ -7,7 +7,7 @@ var fetchadmin = require('../middleware/fetchadmin');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, './uploads');
+    cb(null, '../uploads');
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + '-' + file.originalname);
@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post('/single', upload.single("image"), fetchadmin, async (req, res) => {
+router.post('/upload', upload.single("image"), fetchadmin, async (req, res) => {
     try {
         const { path, filename } = req.file;
         const image = await ImageModel({path, filename});
