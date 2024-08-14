@@ -7,7 +7,7 @@ var fetchadmin = require('../middleware/fetchadmin');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, './uploads');
+    cb(null, '../frontend/src/assets/uploads');
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + '-' + file.originalname);
@@ -20,7 +20,7 @@ router.post('/upload', upload.single("image"), fetchadmin, async (req, res) => {
     try {
         // console.log(req.file);
         const { path, filename } = req.file;
-        const image = await ImageModel({path, filename, admin: req.admin.id});
+        const image = await Image({path, filename, admin: req.admin.id});
         const savedImage = await image.save();
         res.send({"msg": "Image Uploaded", imageId: savedImage._id});
     } catch (error) {
@@ -31,7 +31,7 @@ router.post('/upload', upload.single("image"), fetchadmin, async (req, res) => {
 router.get("/image/:id", fetchadmin, async (req, res) => {
     // const {id} = req.params;
     try {
-        const image = await ImageModel.findById(id);
+        const image = await Image.findById(id);
         if(!image){
             res.send({"msg": "Image Not Found"});
         }
