@@ -9,8 +9,8 @@ connectToMongo();
 
 const app = express();
 
-const port = process.env.PORT;
-// const port = 3001;
+// const port = process.env.PORT;
+const port = 3001;
 
 app.use(cors())
 app.use(express.json())
@@ -29,7 +29,7 @@ app.get("/", async (req, res) => {
 app.use('/api/auth', require('./routes/auth'))
 app.use('/api/contract', require('./routes/contract'))
 app.use('/api/project', require('./routes/project'))
-app.use('/api/image', require('./routes/image'))
+app.use('/api/images', require('./routes/image'))
 
 
 app.listen(port, async () => {

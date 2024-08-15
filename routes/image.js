@@ -16,18 +16,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post('/upload', upload.single("image"), fetchadmin, async (req, res) => {
-    try {
-        // console.log(req.file);
-        const { path, filename } = req.file;
-        const image = await Image({path, filename, admin: req.admin.id});
-        const savedImage = await image.save();
-        res.send({"msg": "Image Uploaded", imageId: savedImage._id});
-    } catch (error) {
-        res.send({"error": "Unable to upload image"});
-    }
-})
-
 router.get("/image/:id", fetchadmin, async (req, res) => {
     // const {id} = req.params;
     try {
@@ -43,5 +31,18 @@ router.get("/image/:id", fetchadmin, async (req, res) => {
         res.send({"error": "Unable to get image"})
     }
 })
+
+router.post('/upload', upload.single("image"), fetchadmin, async (req, res) => {
+    try {
+        // console.log(req.file);
+        const { path, filename } = req.file;
+        const image = await Image({path, filename, admin: req.admin.id});
+        const savedImage = await image.save();
+        res.send({"msg": "Image Uploaded", imageId: savedImage._id});
+    } catch (error) {
+        res.send({"error": "Unable to upload image"});
+    }
+})
+
 
 module.exports = router
