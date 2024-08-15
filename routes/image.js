@@ -3,7 +3,7 @@ const router = express.Router();
 const Image = require('../models/Image');
 const multer = require('multer');
 const path = require('path');
-var fetchadmin = require('../middleware/fetchadmin');
+// var fetchadmin = require('../middleware/fetchadmin');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.get("/image/:id", fetchadmin, async (req, res) => {
+router.get("/image/:id", async (req, res) => {
     // const {id} = req.params;
     try {
         const image = await Image.findById(id);
@@ -32,7 +32,7 @@ router.get("/image/:id", fetchadmin, async (req, res) => {
     }
 })
 
-router.post('/upload', upload.single("image"), fetchadmin, async (req, res) => {
+router.post('/upload', upload.single("image"), async (req, res) => {
     try {
         // console.log(req.file);
         const { path, filename } = req.file;
