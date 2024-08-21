@@ -39,7 +39,7 @@ router.post('/addcontract', fetchadmin, [
             secure: false, // or 'STARTTLS'
             auth: {
               user: 'luciferthegamer292@gmail.com',
-              pass: 'Indranooj#201'
+              pass: 'indranooj#201'
             }
           });
         
