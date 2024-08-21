@@ -33,30 +33,30 @@ router.post('/addcontract', fetchadmin, [
     try {
         const { firstname, lastname, email, phone, domain, address, city, state, width, length,  query } = req.body;
 
-        const transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 587,
-            secure: false, // or 'STARTTLS'
-            auth: {
-              user: 'luciferthegamer292@gmail.com',
-              pass: 'indranooj#201'
-            }
-          });
+        // const transporter = nodemailer.createTransport({
+        //     host: 'smtp.gmail.com',
+        //     port: 587,
+        //     secure: false, // or 'STARTTLS'
+        //     auth: {
+        //       user: '',
+        //       pass: ''
+        //     }
+        //   });
         
-          const mailOptions = {
-            from: 'luciferthegamer292@gmail.com',
-            to: 'luciferthegamer292@gmail.com',
-            subject: 'New Form Submission',
-            text: `Name: ${firstname} ${lastname} \n Email: ${email} \n Phone Number: ${phone} \n Domain: ${domain} \n Address: ${address} \n City: ${city} \n State: ${state} \n Plot Width: ${width} \n Plot Length: ${length} \n Request about project: ${query}`
-          };
+        //   const mailOptions = {
+        //     from: '',
+        //     to: '',
+        //     subject: 'New Form Submission',
+        //     text: `Name: ${firstname} ${lastname} \n Email: ${email} \n Phone Number: ${phone} \n Domain: ${domain} \n Address: ${address} \n City: ${city} \n State: ${state} \n Plot Width: ${width} \n Plot Length: ${length} \n Request about project: ${query}`
+        //   };
         
-          transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-              return console.log(error);
-            }
-            console.log('Email sent: ' + info.response);
-            res.json({ success: true });
-          });
+        //   transporter.sendMail(mailOptions, (error, info) => {
+        //     if (error) {
+        //       return console.log(error);
+        //     }
+        //     console.log('Email sent: ' + info.response);
+        //     res.json({ success: true });
+        //   });
 
         const errors = validationResult(req);
         if(!errors.isEmpty()){
