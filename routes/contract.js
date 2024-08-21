@@ -3,6 +3,7 @@ const router = express.Router();
 const Contract = require('../models/Contract');
 const { body, validationResult } = require('express-validator');
 var fetchadmin = require('../middleware/fetchadmin');
+const nodemailer = require('nodemailer');
 
 
 // Route 1: Get all the contracts using: GET "/api/contract/fetchallcontracts".
@@ -31,6 +32,32 @@ router.post('/addcontract', fetchadmin, [
 ], async (req, res) => {
     try {
         const { firstname, lastname, email, phone, domain, address, city, state, width, length,  query } = req.body;
+
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false, // or 'STARTTLS'
+            auth: {
+              user: 'luciferthegamer292@gmail.com',
+              pass: 'Indranooj#201'
+            }
+          });
+        
+          const mailOptions = {
+            from: 'luciferthegamer292@gmail.com',
+            to: 'luciferthegamer292@gmail.com',
+            subject: 'New Form Submission',
+            text: `Name: ${firstname} ${lastname} \n Email: ${email} \n Phone Number: ${phone} \n Domain: ${domain} \n Address: ${address} \n City: ${city} \n State: ${state} \n Plot Width: ${width} \n Plot Length: ${length} \n Request about project: ${query}`
+          };
+        
+          transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+              return console.log(error);
+            }
+            console.log('Email sent: ' + info.response);
+            res.json({ success: true });
+          });
+
         const errors = validationResult(req);
         if(!errors.isEmpty()){
             return res.status(400).json({error: errors.array()});
