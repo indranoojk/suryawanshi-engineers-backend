@@ -23,23 +23,38 @@ router.post('/addproject', fetchadmin, [
     body("description", "Enter a valid description").isLength({ min: 5 }),
     body("content", "Content must be atleast 15 characters").isLength({ min: 15 }),
 ], async (req, res) => {
-    try {
+    // try {
 
-        const { title, description, content } = req.body;
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-        const project = new Project({
-            title, description, content, admin: req.admin.id
-        })
-        const savedProject = await project.save();
-        res.json(savedProject);
-    } catch (error) {   
-        console.error(error.message);
-        res.status(500).send("Internal Server Error");
-    }
+    //     const { title, description, content } = req.body;
+    //     const errors = validationResult(req);
+    //     if (!errors.isEmpty()) {
+    //         return res.status(400).json({ errors: errors.array() });
+    //     }
+    //     const project = new Project({
+    //         title, description, content, admin: req.admin.id
+    //     })
+    //     const savedProject = await project.save();
+    //     res.json(savedProject);
+    // } catch (error) {   
+    //     console.error(error.message);
+    //     res.status(500).send("Internal Server Error");
+    // }
 
+    let projects = await Project.find({});
+    const project = new Project({
+        title: req.body.title,
+        description: req.body.description,
+        content: req.body.content,
+        image: req.body.image,
+    });
+    console.log(project);
+    await project.save();
+    console.log("Saved");
+    res.json({
+        success: true,
+        title: req.body.title,
+
+    })
 })
 
 
