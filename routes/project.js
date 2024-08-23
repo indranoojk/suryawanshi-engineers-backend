@@ -3,7 +3,6 @@ const router = express.Router();
 const Project = require('../models/Project');
 const { body, validationResult } = require('express-validator');
 var fetchadmin = require('../middleware/fetchadmin');
-const baseUrl = require('../../frontend/src/Urls');
 
 const multer = require('multer');
 const path = require('path');
@@ -31,7 +30,7 @@ const storage = multer.diskStorage({
   
           res.json({
               success: 1,
-              image_url: `${baseUrl}/api/images/${req.file.filename}`
+              image_url: `/images/${req.file.filename}`
           })
       } catch (error) {
           res.send({"error": "Unable to upload image"});
