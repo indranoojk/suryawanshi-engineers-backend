@@ -3,6 +3,40 @@ const router = express.Router();
 const Project = require('../models/Project');
 const { body, validationResult } = require('express-validator');
 var fetchadmin = require('../middleware/fetchadmin');
+const baseUrl = require('../../frontend/src/Urls');
+
+const multer = require('multer');
+const path = require('path');
+
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, './upload/images');
+    },
+    filename: (req, file, cb) => {
+      // cb(null, Date.now() + '-' + file.originalname);
+      cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
+    }
+  });
+  
+  const upload = multer({ storage: storage });
+  
+  router.post('/images/upload', upload.single('project'), async (req, res) => {
+      try {
+          // console.log(req.file);
+          // const { path, filename } = req.file;
+          // const image = await Image({path, filename, admin: req.admin.id});
+          // const savedImage = await image.save();
+          // res.send({"msg": "Image Uploaded", imageId: savedImage._id});
+  
+          res.json({
+              success: 1,
+              image_url: `${baseUrl}/api/images/${req.file.filename}`
+          })
+      } catch (error) {
+          res.send({"error": "Unable to upload image"});
+      }
+  })
 
 
 // ROUTE 1: Get All the projects using: GET "/api/projects/getadmin". login required
