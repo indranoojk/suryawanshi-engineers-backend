@@ -26,9 +26,9 @@ app.get("/", async (req, res) => {
   }
 });
 
-app.get("/api/images", async (req, res) => {
+app.get("/images", async (req, res) => {
   try {
-    res.status(200).json({ msg: "I am in /api/images route" });
+    res.status(200).json({ msg: "I am in images route" });
   } catch (error) {
     res.status(500).json({ msg: "Error in images route" });
   }
