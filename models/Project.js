@@ -6,6 +6,7 @@ const ProjectSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'admin'
     },
+    id: { type: Number, required: true },
     title: {
         type: String,
         required: true
