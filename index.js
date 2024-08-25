@@ -26,6 +26,14 @@ app.get("/", async (req, res) => {
   }
 });
 
+app.get("/api/images", async (req, res) => {
+  try {
+    res.status(200).json({ msg: "I am in /api/images route" });
+  } catch (error) {
+    res.status(500).json({ msg: "Error in images route" });
+  }
+});
+
 app.use('/api/auth', require('./routes/auth'))
 app.use('/api/contract', require('./routes/contract'))
 app.use('/api/project', require('./routes/project'))
