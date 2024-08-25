@@ -23,7 +23,7 @@ router.post('/images/upload', upload.single('project'), async (req, res) => {
     try {
         res.json({
             success: 1,
-            image_url: `https://suryawanshi-engineers-backend.onrender.com/images/${req.file.filename}`
+            image_url: `/images/${req.file.filename}`
         })
     } catch (error) {
         res.send({ "error": "Unable to upload image" });
