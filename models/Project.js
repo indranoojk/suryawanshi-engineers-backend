@@ -2,11 +2,14 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const ProjectSchema = new Schema({
-    admin: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'admin'
+    // admin: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'admin'
+    // },
+    id: { 
+        type: Number, 
+        required: true
     },
-    id: { type: Number, required: true },
     title: {
         type: String,
         required: true

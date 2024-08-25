@@ -21,12 +21,6 @@ const upload = multer({ storage: storage });
 
 router.post('/images/upload', upload.single('project'), async (req, res) => {
     try {
-        // console.log(req.file);
-        // const { path, filename } = req.file;
-        // const image = await Image({path, filename, admin: req.admin.id});
-        // const savedImage = await image.save();
-        // res.send({"msg": "Image Uploaded", imageId: savedImage._id});
-
         res.json({
             success: 1,
             image_url: `https://suryawanshi-engineers-backend.onrender.com/images/${req.file.filename}`
@@ -36,25 +30,13 @@ router.post('/images/upload', upload.single('project'), async (req, res) => {
     }
 })
 
-
-// ROUTE 1: Get All the projects using: GET "/api/projects/getadmin". login required
-router.get('/fetchallprojects', async (req, res) => {
-    try {
-        const projects = await Project.find({ admin: req.admin.id });
-        res.json(projects);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).send("Internal Server Error");
-    }
-
-})
-
-// ROUTE 2: Add a new Project using: POST "/api/projects/addProject". login required
-router.post('/addproject', [
-    body("title", "Enter a valid title").isLength({ min: 5 }),
-    body("description", "Enter a valid description").isLength({ min: 5 }),
-    body("content", "Content must be atleast 15 characters").isLength({ min: 15 }),
-], async (req, res) => {
+router.post('/addproject', 
+    // [
+    // body("title", "Enter a valid title").isLength({ min: 5 }),
+    // body("description", "Enter a valid description").isLength({ min: 5 }),
+    // body("content", "Content must be atleast 15 characters").isLength({ min: 15 }),
+    // ],
+     async (req, res) => {
     // try {
 
     //     const { title, description, content } = req.body;
@@ -72,29 +54,35 @@ router.post('/addproject', [
     //     res.status(500).send("Internal Server Error");
     // }
 
-    let projects = await Project.find({});
-    let id;
-    if (products.length > 0) {
-        let last_product_array = products.slice(-1);
-        let last_product = last_product_array[0];
-        id = last_product.id + 1;
-    }
-    else { id = 1; }
-    const project = new Project({
-        id: id,
-        title: req.body.title,
-        description: req.body.description,
-        content: req.body.content,
-        image: req.body.image,
-    });
-    console.log(project);
-    await project.save();
-    console.log("Saved");
-    res.json({
-        success: true,
-        title: req.body.title,
-
-    })
+    try{
+        let projects = await Project.find({});
+        let id;
+        if (projects.length > 0) {
+            let last_project_array = projects.slice(-1);
+            let last_project = last_project_array[0];
+            id = last_project.id + 1;
+        }
+        else { 
+            id = 1;
+        }
+        const project = new Project({
+            id: id,
+            title: req.body.title,
+            description: req.body.description,
+            content: req.body.content,
+            image: req.body.image,
+        });
+        console.log(project);
+        await project.save();
+        console.log("Saved");
+        res.json({
+            success: true,
+            title: req.body.title,
+        })
+    } catch (error) {   
+            console.error(error.message);
+            res.status(500).send("Internal Server Error");
+        }
 })
 
 
@@ -125,18 +113,33 @@ router.post('/addproject', [
 
 // })
 
-
-// ROUTE 4: Delete an existing Project using: DELETE "/api/projects/deleteProject". login required
 router.post('/deleteproject', async (req, res) => {
 
     try {
-        await Product.findOneAndDelete({ id: req.body.id });
-        console.log("Removed");
-        res.json({ success: true, title: req.body.title })
+        await Project.findOneAndDelete({ id: req.body.id });
+        console.log("Project Deleted");
+        res.json({ 
+            success: true, 
+            title: req.body.title 
+        })
     } catch (error) {
         console.error(error.message);
         res.status(500).send("Internal Server Error");
     }
+})
+
+
+router.get('/allprojects', async (req, res) => {
+    try {
+        const projects = await Project.find({ });
+        console.log("All Projects are Fetched");
+        // res.json(projects);
+        res.send(projects);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Internal Server Error");
+    }
+
 })
 
 
