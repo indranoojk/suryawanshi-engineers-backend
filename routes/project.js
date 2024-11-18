@@ -86,6 +86,18 @@ router.post('/addproject',
 })
 
 
+
+router.get('/project/:id', async (req, res) => {
+    const projectId = req.params.id;
+    const project = await Project.find(p => p.id === projectId);
+    if (project) {
+        res.send(project)
+    } else {
+        res.status(400).json({ error: "Project not found!" });
+    }
+})
+
+
 // ROUTE 3: Update an existing Project using: PUT "/api/projects/updateProject". login required
 // router.put('/updateproject/:id', async (req, res) => {
 //     const { title, description, content } = req.body;
