@@ -4,6 +4,7 @@ const express = require('express')
 var cors = require('cors')
 const colors = require("colors");
 const bodyParser = require('body-parser');
+const fileUpload = require('express-fileupload');
 
 connectToMongo();
 
@@ -18,6 +19,10 @@ app.use(express.json())
 
 app.use(bodyParser.json());
 app.use('/images', express.static("upload/images"));
+
+app.use(fileUpload({
+  useTempFiles: true,
+}))
 
 app.get("/", async (req, res) => {
   try {

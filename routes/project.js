@@ -3,99 +3,93 @@ const router = express.Router();
 const Project = require('../models/Project');
 const { body, validationResult } = require('express-validator');
 // var fetchadmin = require('../middleware/fetchadmin');
+require('dotenv').config();
 const multer = require('multer');
 const path = require('path');
+const cloudinary = require('cloudinary').v2;
 
+const upload = multer({ dest: 'temp/' });
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, './upload/images');
+//     },
+//     filename: (req, file, cb) => {
+//         // cb(null, Date.now() + '-' + file.originalname);
+//         cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
+//     }
+// });
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, './upload/images');
-    },
-    filename: (req, file, cb) => {
-        // cb(null, Date.now() + '-' + file.originalname);
-        cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
-    }
-});
+// const upload = multer({ storage: storage });
 
-const upload = multer({ storage: storage });
-
-router.post('/images/upload', upload.single('project'), async (req, res) => {
-    try {
-        res.json({
-            success: 1,
-            image_url: `/images/${req.file.filename}`
-        })
-    } catch (error) {
-        res.send({ "error": "Unable to upload image" });
-    }
-})
-
-router.post('/addproject', 
-    // [
-    // body("title", "Enter a valid title").isLength({ min: 5 }),
-    // body("description", "Enter a valid description").isLength({ min: 5 }),
-    // body("content", "Content must be atleast 15 characters").isLength({ min: 15 }),
-    // ],
-     async (req, res) => {
-    // try {
-
-    //     const { title, description, content } = req.body;
-    //     const errors = validationResult(req);
-    //     if (!errors.isEmpty()) {
-    //         return res.status(400).json({ errors: errors.array() });
-    //     }
-    //     const project = new Project({
-    //         title, description, content, admin: req.admin.id
-    //     })
-    //     const savedProject = await project.save();
-    //     res.json(savedProject);
-    // } catch (error) {   
-    //     console.error(error.message);
-    //     res.status(500).send("Internal Server Error");
-    // }
-
-    try{
-        let projects = await Project.find({});
-        let id;
-        if (projects.length > 0) {
-            let last_project_array = projects.slice(-1);
-            let last_project = last_project_array[0];
-            id = last_project.id + 1;
-        }
-        else { 
-            id = 1;
-        }
-        const project = new Project({
-            id: id,
-            title: req.body.title,
-            description: req.body.description,
-            content: req.body.content,
-            image: req.body.image,
-        });
-        console.log(project);
-        await project.save();
-        console.log("Saved");
-        res.json({
-            success: true,
-            title: req.body.title,
-        })
-    } catch (error) {   
-            console.error(error.message);
-            res.status(500).send("Internal Server Error");
-        }
-})
-
-
-
-// router.get('/:id', async (req, res) => {
-//     const projectId = req.params.id;
-//     const project = await Project.find(p => p.id === projectId);
-//     if (project) {
-//         res.send(project)
-//     } else {
-//         res.status(400).json({ error: "Project not found!" });
+// router.post('/images/upload', upload.single('project'), async (req, res) => {
+//     try {
+//         res.json({
+//             success: 1,
+//             image_url: `/images/${req.file.filename}`
+//         })
+//     } catch (error) {
+//         res.send({ "error": "Unable to upload image" });
 //     }
 // })
+
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET,
+});
+
+
+router.post('/addproject',
+    async (req, res) => {
+
+        const file = req.files.image;
+        cloudinary.uploader.upload(file.tempFilePath, async (err, result) => {
+            console.log(result);
+            try {
+                let projects = await Project.find({});
+                let id;
+                if (projects.length > 0) {
+                    let last_project_array = projects.slice(-1);
+                    let last_project = last_project_array[0];
+                    id = last_project.id + 1;
+                }
+                else {
+                    id = 1;
+                }
+                const project = new Project({
+                    id: id,
+                    title: req.body.title,
+                    description: req.body.description,
+                    content: req.body.content,
+                    // image: req.body.image,
+                    image: result.secure_url,
+                });
+                console.log(project);
+                await project.save();
+                console.log("Saved");
+                res.json({
+                    success: true,
+                    title: req.body.title,
+                })
+            } catch (error) {
+                console.error(error.message);
+                res.status(500).send("Internal Server Error");
+            }
+        });
+
+    })
+
+
+
+router.get('/:id', async (req, res) => {
+    const projectId = req.params.id;
+    const project = await Project.find(p => p.id === projectId);
+    if (project) {
+        res.send(project)
+    } else {
+        res.status(400).json({ error: "Project not found!" });
+    }
+})
 
 
 // ROUTE 3: Update an existing Project using: PUT "/api/projects/updateProject". login required
@@ -125,14 +119,43 @@ router.post('/addproject',
 
 // })
 
+// router.post('/addproject', upload.single('image'), async (req, res) => {
+//     try {
+//         // Upload image to Cloudinary
+//         const result = await cloudinary.uploader.upload(req.file.path);
+        
+//         // Delete the temporary file
+//         fs.unlinkSync(req.file.path);
+
+//         // Generate new project ID
+//         const projects = await Project.find({});
+//         const newProjectId = projects.length > 0 ? projects[projects.length - 1].id + 1 : 1;
+
+//         // Create new project
+//         const project = new Project({
+//             id: newProjectId,
+//             title: req.body.title,
+//             description: req.body.description,
+//             content: req.body.content,
+//             image: result.secure_url, // Save Cloudinary URL
+//         });
+
+//         await project.save();
+//         res.status(201).json({ success: true, message: "Project added successfully!" });
+//     } catch (error) {
+//         console.error(error.message);
+//         res.status(500).json({ success: false, message: "Internal Server Error" });
+//     }
+// });
+
 router.post('/deleteproject', async (req, res) => {
 
     try {
         await Project.findOneAndDelete({ id: req.body.id });
         console.log("Project Deleted");
-        res.json({ 
-            success: true, 
-            title: req.body.title 
+        res.json({
+            success: true,
+            title: req.body.title
         })
     } catch (error) {
         console.error(error.message);
