@@ -143,7 +143,7 @@ router.post('/deleteproject', async (req, res) => {
 
 router.get('/allprojects', async (req, res) => {
     try {
-        const projects = await Project.find({ });
+        const projects = await Project.find({});
         console.log("All Projects are Fetched");
         // res.json(projects);
         res.send(projects);
