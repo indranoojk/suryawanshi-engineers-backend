@@ -43,41 +43,43 @@ router.post('/addproject',
     async (req, res) => {
 
         const file = req.files.image;
-        cloudinary.uploader.upload(file.tempFilePath, async (err, result) => {
-            console.log(result);
-            try {
-                let projects = await Project.find({});
-                let id;
-                if (projects.length > 0) {
-                    let last_project_array = projects.slice(-1);
-                    let last_project = last_project_array[0];
-                    id = last_project.id + 1;
-                }
-                else {
-                    id = 1;
-                }
-                const project = new Project({
-                    id: id,
-                    title: req.body.title,
-                    description: req.body.description,
-                    content: req.body.content,
-                    // image: req.body.image,
-                    image: result.secure_url,
-                });
-                console.log(project);
-                await project.save();
-                console.log("Saved");
-                res.json({
-                    success: true,
-                    title: req.body.title,
-                })
-            } catch (error) {
-                console.error(error.message);
-                res.status(500).send("Internal Server Error");
-            }
-        });
+        const ImageData = await cloudinary.uploader
+            .upload(file.tempFilePath)
+            .catch((error) => {
+                console.log(error);
+            });
 
-    })
+        try {
+            let projects = await Project.find({});
+            let id;
+            if (projects.length > 0) {
+                let last_project_array = projects.slice(-1);
+                let last_project = last_project_array[0];
+                id = last_project.id + 1;
+            }
+            else {
+                id = 1;
+            }
+            const project = new Project({
+                id: id,
+                title: req.body.title,
+                description: req.body.description,
+                content: req.body.content,
+                // image: req.body.image,
+                image: ImageData.secure_url,
+            });
+            console.log(project);
+            await project.save();
+            console.log("Saved");
+            res.json({
+                success: true,
+                title: req.body.title,
+            })
+        } catch (error) {
+            console.error(error.message);
+            res.status(500).send("Internal Server Error");
+        }
+    });
 
 
 
@@ -123,7 +125,7 @@ router.get('/:id', async (req, res) => {
 //     try {
 //         // Upload image to Cloudinary
 //         const result = await cloudinary.uploader.upload(req.file.path);
-        
+
 //         // Delete the temporary file
 //         fs.unlinkSync(req.file.path);
 
