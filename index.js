@@ -13,7 +13,12 @@ const app = express();
 const port = process.env.PORT;
 // const port = 3001;
 
-app.use(cors())
+// app.use(cors())
+app.use(cors({
+  origin: 'https://suryawanshi-engineers.vercel.app/', // Frontend domain
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 // app.use(cors({ origin: 'https://suryawanshi-engineers.vercel.app/' }))
 app.use(express.json())
 
