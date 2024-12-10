@@ -13,8 +13,13 @@ const app = express();
 const port = process.env.PORT;
 // const port = 3001;
 
-app.use(cors())
+// app.use(cors())
 // app.use(cors({ origin: 'https://suryawanshi-engineers.vercel.app/' }))
+app.use(cors({
+  origin: 'https://suryawanshi-engineers.vercel.app', // Your frontend domain
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+  credentials: true // Enable cookies and headers if required
+}));
 app.use(express.json())
 
 app.use(bodyParser.json());
