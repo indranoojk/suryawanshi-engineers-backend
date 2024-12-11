@@ -26,14 +26,14 @@ const port = process.env.PORT;
 // }
 // app.use(cors({ origin: 'https://suryawanshi-engineers.vercel.app/' }))
 app.use(cors({
-  origin: ['https://suryawanshi-engineers.vercel.app', 'http://res.cloudinary.com'], // Your frontend domain
+  origin: ['https://suryawanshi-engineers.vercel.app', 'https://res.cloudinary.com/dm8ca7qod/image/upload'], // Your frontend domain
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
   credentials: true // Enable cookies and headers if required
 }));
 app.use(express.json())
 
 app.use(bodyParser.json());
-app.use('/images', express.static("upload/images"));
+// app.use('/images', express.static("upload/images"));
 
 app.use(fileUpload({
   useTempFiles: true,
@@ -47,13 +47,13 @@ app.get("/", async (req, res) => {
   }
 });
 
-app.get("/images", async (req, res) => {
-  try {
-    res.status(200).json({ msg: "I am in images route" });
-  } catch (error) {
-    res.status(500).json({ msg: "Error in images route" });
-  }
-});
+// app.get("/images", async (req, res) => {
+//   try {
+//     res.status(200).json({ msg: "I am in images route" });
+//   } catch (error) {
+//     res.status(500).json({ msg: "Error in images route" });
+//   }
+// });
 
 app.use('/api/auth', require('./routes/auth'))
 app.use('/api/contract', require('./routes/contract'))

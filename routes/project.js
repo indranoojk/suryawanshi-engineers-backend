@@ -42,13 +42,14 @@ cloudinary.config({
 router.post('/addproject',
     async (req, res) => {
 
-        try {
-            const file = req.files.image;
-            const ImageData = await cloudinary.uploader
-                .upload(file.tempFilePath)
-                .catch((error) => {
-                    console.log(error);
-                });
+    try {
+        const file = req.files.image;
+        const ImageData = await cloudinary.uploader
+            .upload(file.tempFilePath)
+            .catch((error) => {
+                console.log(error);
+            });
+            // console.log(ImageData);
 
             let projects = await Project.find({});
             let id;
@@ -85,18 +86,13 @@ router.post('/addproject',
 
 router.get('/:id', async (req, res) => {
     const projectId = req.params.id;
-    try {
-        const project = await Project.findOne({ id: projectId }); // Use findOne with a query object
-        if (project) {
-            res.send(project);
-        } else {
-            res.status(400).json({ error: "Project not found!" });
-        }
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).send("Internal Server Error");
+    const project = await Project.find(p => p.id === projectId);
+    if (project) {
+        res.send(project)
+    } else {
+        res.status(400).json({ error: "Project not found!" });
     }
-});
+})
 
 
 // ROUTE 3: Update an existing Project using: PUT "/api/projects/updateProject". login required
@@ -186,108 +182,3 @@ router.get('/allprojects', async (req, res) => {
 
 
 module.exports = router
-
-
-// const express = require('express');
-// const router = express.Router();
-// const Project = require('../models/Project');
-// const { body, validationResult } = require('express-validator');
-// require('dotenv').config();
-// const multer = require('multer');
-// const path = require('path');
-// const cloudinary = require('cloudinary').v2;
-
-// const upload = multer({ dest: 'temp/' });
-
-// cloudinary.config({
-//     cloud_name: process.env.CLOUD_NAME,
-//     api_key: process.env.API_KEY,
-//     api_secret: process.env.API_SECRET,
-// });
-
-// // Route to add a project
-// router.post('/addproject', upload.single('image'), async (req, res) => {
-//     try {
-//         const file = req.file; // Use req.file for single file upload
-//         const ImageData = await cloudinary.uploader.upload(file.path); // Use file.path instead of tempFilePath
-
-//         // Generate new project ID
-//         const projects = await Project.find({});
-//         let id;
-//         if (projects.length > 0) {
-//             let last_project_array = projects.slice(-1);
-//             let last_project = last_project_array[0];
-//             id = last_project.id + 1;
-//         }
-//         else {
-//             id = 1;
-//         }
-
-//         const project = new Project({
-//             id: id,
-//             title: req.body.title,
-//             description: req.body.description,
-//             content: req.body.content,
-//             image: ImageData.secure_url,
-//         });
-
-//         await project.save();
-//         console.log("Saved");
-//         res.json({
-//             success: true,
-//             title: req.body.title,
-//         });
-//     } catch (error) {
-//         console.error(error.message);
-//         res.status(500).send("Internal Server Error");
-//     }
-// });
-
-// // Route to get a project by ID
-// router.get('/:id', async (req, res) => {
-//     const projectId = req.params.id;
-//     try {
-//         const project = await Project.findOne({ id: projectId }); // Use findOne with a query object
-//         if (project) {
-//             res.send(project);
-//         } else {
-//             res.status(400).json({ error: "Project not found!" });
-//         }
-//     } catch (error) {
-//         console.error(error.message);
-//         res.status(500).send("Internal Server Error");
-//     }
-// });
-
-// // Route to delete a project
-// router.post('/deleteproject', async (req, res) => {
-//     try {
-//         const project = await Project.findOneAndDelete({ id: req.body.id });
-//         if (project) {
-//             console.log("Project Deleted");
-//             res.json({
-//                 success: true,
-//                 title: project.title,
-//             });
-//         } else {
-//             res.status(404).json({ error: "Project not found!" });
-//         }
-//     } catch (error) {
-//         console.error(error.message);
-//         res.status(500).send("Internal Server Error");
-//     }
-// });
-
-// // Route to get all projects
-// router.get('/allprojects', async (req, res) => {
-//     try {
-//         const projects = await Project.find({});
-//         console.log("All Projects are Fetched");
-//         res.send(projects);
-//     } catch (error) {
-//         console.error(error.message);
-//         res.status(500).send("Internal Server Error");
-//     }
-// });
-
-// module.exports = router;
