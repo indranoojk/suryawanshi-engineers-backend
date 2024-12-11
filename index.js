@@ -13,7 +13,17 @@ const app = express();
 const port = process.env.PORT;
 // const port = 3001;
 
-app.use(cors())
+// app.use(cors())
+const whitelist = ['https://suryawanshi-engineers.vercel.app', 'http://res.cloudinary.com']
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
 // app.use(cors({ origin: 'https://suryawanshi-engineers.vercel.app/' }))
 // app.use(cors({
 //   origin: 'http://res.cloudinary.com/dm8ca7qod/image/upload/', // Your frontend domain
