@@ -208,7 +208,15 @@ router.post('/addproject', upload.single('image'), async (req, res) => {
 
         // Generate new project ID
         const projects = await Project.find({});
-        let id = projects.length > 0 ? projects[projects.length - 1].id + 1 : 1;
+        let id;
+        if (projects.length > 0) {
+            let last_project_array = projects.slice(-1);
+            let last_project = last_project_array[0];
+            id = last_project.id + 1;
+        }
+        else {
+            id = 1;
+        }
 
         const project = new Project({
             id: id,
