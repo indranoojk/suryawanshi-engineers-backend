@@ -84,15 +84,31 @@ router.post('/addproject',
 
 
 
-router.get('/:id', async (req, res) => {
-    const projectId = req.params.id;
-    const project = await Project.find(p => p.id === projectId);
-    if (project) {
-        res.send(project)
-    } else {
-        res.status(400).json({ error: "Project not found!" });
-    }
-})
+// router.get('/:id', async (req, res) => {
+//     const projectId = req.params.id;
+//     const project = await Project.find(p => p.id === projectId);
+//     if (project) {
+//         res.send(project)
+//     } else {
+//         res.status(400).json({ error: "Project not found!" });
+//     }
+// })
+
+
+// router.get('/:id', async (req, res) => {
+//     const projectId = req.params.id;
+//     try {
+//         const project = await Project.find( p => p.id === projectId ); // Ensure projectId is a number
+//         if (project) {
+//             res.send(project);
+//         } else {
+//             res.status(404).json({ error: "Project not found!" });
+//         }
+//     } catch (error) {
+//         console.error(error.message);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
 
 
 // ROUTE 3: Update an existing Project using: PUT "/api/projects/updateProject". login required
@@ -180,5 +196,27 @@ router.get('/allprojects', async (req, res) => {
 
 })
 
+
+// router.get('/allprojects', async (req, res) => {
+//     try {
+//         const projects = await Project.find({});
+//         console.log("All Projects are Fetched");
+
+//         // Check if projects are found
+//         if (projects.length === 0) {
+//             return res.status(404).json({ success: false, message: "No projects found." });
+//         }
+
+//         // Send a structured response
+//         res.status(200).json({
+//             success: true,
+//             count: projects.length,
+//             projects: projects,
+//         });
+//     } catch (error) {
+//         console.error(error.message);
+//         res.status(500).json({ success: false, message: "Internal Server Error" });
+//     }
+// });
 
 module.exports = router

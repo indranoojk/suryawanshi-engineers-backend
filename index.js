@@ -26,10 +26,11 @@ const port = process.env.PORT;
 // }
 // app.use(cors({ origin: 'https://suryawanshi-engineers.vercel.app/' }))
 app.use(cors({
-  origin: ['https://suryawanshi-engineers.vercel.app', 'https://res.cloudinary.com/dm8ca7qod/image/upload'], // Your frontend domain
+  origin: [process.env.FRONTEND_URL, process.env.CLOUD_URL], // Your frontend domain
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
   credentials: true // Enable cookies and headers if required
 }));
+
 app.use(express.json())
 
 app.use(bodyParser.json());
