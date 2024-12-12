@@ -39,7 +39,7 @@ cloudinary.config({
 });
 
 
-router.post('/addproject',
+router.post('/addproject', upload.single('image'), 
     async (req, res) => {
 
     try {
