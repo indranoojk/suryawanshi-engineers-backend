@@ -13,7 +13,7 @@ const app = express();
 const port = process.env.PORT;
 // const port = 3001;
 
-// app.use(cors())
+app.use(cors())
 // const whitelist = ['https://suryawanshi-engineers.vercel.app', 'http://res.cloudinary.com']
 // const corsOptions = {
 //   origin: function (origin, callback) {
@@ -25,11 +25,11 @@ const port = process.env.PORT;
 //   }
 // }
 // app.use(cors({ origin: 'https://suryawanshi-engineers.vercel.app/' }))
-app.use(cors({
-  origin: [process.env.FRONTEND_URL, process.env.CLOUD_URL], // Your frontend domain
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-  credentials: true // Enable cookies and headers if required
-}));
+// app.use(cors({
+//   origin: [process.env.FRONTEND_URL, process.env.CLOUD_URL], // Your frontend domain
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+//   credentials: true // Enable cookies and headers if required
+// }));
 
 app.use(express.json())
 
