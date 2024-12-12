@@ -8,7 +8,6 @@ const multer = require('multer');
 const path = require('path');
 const cloudinary = require('cloudinary').v2;
 
-const upload = multer({ storage: storage, dest: 'temp/' });
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, './upload/images');
@@ -18,6 +17,7 @@ const storage = multer.diskStorage({
         cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
     }
 });
+const upload = multer({ storage: storage, dest: 'temp/' });
 
 // const upload = multer({ storage: storage });
 
