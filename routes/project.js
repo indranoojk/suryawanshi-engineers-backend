@@ -8,6 +8,12 @@ const multer = require('multer');
 const path = require('path');
 const cloudinary = require('cloudinary').v2;
 
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET,
+});
+
 const upload = multer({ dest: 'temp/' });
 // const storage = multer.diskStorage({
 //     destination: (req, file, cb) => {
@@ -21,35 +27,52 @@ const upload = multer({ dest: 'temp/' });
 
 // const upload = multer({ storage: storage });
 
-// router.post('/images/upload', upload.single('project'), async (req, res) => {
-//     try {
-//         res.json({
-//             success: 1,
-//             image_url: `/images/${req.file.filename}`
-//         })
-//     } catch (error) {
-//         res.send({ "error": "Unable to upload image" });
-//     }
-// })
-
-cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.API_KEY,
-    api_secret: process.env.API_SECRET,
-});
-
-
-router.post('/addproject', upload.single('image'), 
-    async (req, res) => {
-
+router.post('/images/upload', async (req, res) => {
     try {
-        const file = req.files.image;
-        const ImageData = await cloudinary.uploader
-            .upload(file.tempFilePath)
+    const {image} = req.body;
+    const ImageData = await cloudinary.uploader
+            .upload(image)
             .catch((error) => {
                 console.log(error);
             });
-            // console.log(ImageData);
+            console.log(ImageData);
+        res.json({
+            success: 1,
+            image_url: ImageData.secure_url,
+        })
+    } catch (error) {
+        res.send({ "error": `Unable to upload image: ${error}` });
+    }
+        // res.json({
+        //     success: 1,
+        //     image_url: `/images/${req.file.filename}`
+        // })
+    //     const file = req.files.image;
+    //     const ImageData = await cloudinary.uploader
+    //         .upload(file.tempFilePath)
+    //         .catch((error) => {
+    //             console.log(error);
+    //         });
+    //         console.log(ImageData);
+    //     res.json({
+    //         success: 1,
+    //         image_url: ImageData.secure_url,
+    //     })
+})
+
+// const storage = multer.memoryStorage();
+// const upload = multer({ storage: storage });
+
+
+router.post('/addproject', async (req, res) => {
+
+    try {
+        // const file = req.files.image;
+        // const ImageData = await cloudinary.uploader
+        //     .upload(file.tempFilePath)
+        //     .catch((error) => {
+        //         console.log(error);
+        //     });
 
             let projects = await Project.find({});
             let id;
@@ -66,8 +89,8 @@ router.post('/addproject', upload.single('image'),
                 title: req.body.title,
                 description: req.body.description,
                 content: req.body.content,
-                // image: req.body.image,
-                image: ImageData.secure_url,
+                image: req.body.image,
+                // image: ImageData.secure_url,
             });
             await project.save();
             console.log(project);
