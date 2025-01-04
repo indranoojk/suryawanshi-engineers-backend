@@ -14,7 +14,7 @@ cloudinary.config({
     api_secret: process.env.API_SECRET,
 });
 
-const upload = multer({ dest: 'temp/' });
+// const upload = multer({ dest: 'temp/' });
 // const storage = multer.diskStorage({
 //     destination: (req, file, cb) => {
 //         cb(null, './upload/images');

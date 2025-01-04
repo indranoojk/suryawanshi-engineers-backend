@@ -14,16 +14,7 @@ const port = process.env.PORT;
 // const port = 3001;
 
 app.use(cors())
-// const whitelist = ['https://suryawanshi-engineers.vercel.app', 'http://res.cloudinary.com']
-// const corsOptions = {
-//   origin: function (origin, callback) {
-//     if (whitelist.indexOf(origin) !== -1) {
-//       callback(null, true)
-//     } else {
-//       callback(new Error('Not allowed by CORS'))
-//     }
-//   }
-// }
+
 // app.use(cors({ origin: 'https://suryawanshi-engineers.vercel.app/' }))
 // app.use(cors({
 //   origin: [process.env.FRONTEND_URL, process.env.CLOUD_URL], // Your frontend domain
@@ -31,14 +22,16 @@ app.use(cors())
 //   credentials: true // Enable cookies and headers if required
 // }));
 
-app.use(express.json())
+// app.use(express.json())
+app.use(express.json({ limit: '10mb' })); // Adjust the limit as needed
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 app.use(bodyParser.json());
-// app.use('/images', express.static("upload/images"));
+app.use('/images', express.static("upload/images"));
 
-app.use(fileUpload({
-  useTempFiles: true,
-}))
+// app.use(fileUpload({
+//   useTempFiles: true,
+// }))
 
 app.get("/", async (req, res) => {
   try {
