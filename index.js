@@ -52,7 +52,7 @@ app.get("/", async (req, res) => {
 app.use('/api/auth', require('./routes/auth'))
 app.use('/api/contract', require('./routes/contract'))
 app.use('/api/project', require('./routes/project'))
-// app.use('/api/images', require('./routes/image'))
+app.use('/api/image', require('./routes/image'))
 
 
 app.listen(port, async () => {

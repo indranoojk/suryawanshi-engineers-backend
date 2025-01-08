@@ -6,13 +6,14 @@ const { body, validationResult } = require('express-validator');
 require('dotenv').config();
 const multer = require('multer');
 const path = require('path');
-const cloudinary = require('cloudinary').v2;
 
-cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.API_KEY,
-    api_secret: process.env.API_SECRET,
-});
+// const cloudinary = require('cloudinary').v2;
+
+// cloudinary.config({
+//     cloud_name: process.env.CLOUD_NAME,
+//     api_key: process.env.API_KEY,
+//     api_secret: process.env.API_SECRET,
+// });
 
 // const upload = multer({ dest: 'temp/' });
 // const storage = multer.diskStorage({
@@ -27,38 +28,58 @@ cloudinary.config({
 
 // const upload = multer({ storage: storage });
 
-router.post('/images/upload', async (req, res) => {
-    try {
-    const {image} = req.body;
-    const ImageData = await cloudinary.uploader
-            .upload(image)
-            .catch((error) => {
-                console.log(error);
-            });
-            console.log(ImageData);
-        res.json({
-            success: 1,
-            image_url: ImageData.secure_url,
-        })
-    } catch (error) {
-        res.send({ "error": `Unable to upload image: ${error}` });
-    }
-        // res.json({
-        //     success: 1,
-        //     image_url: `/images/${req.file.filename}`
-        // })
-    //     const file = req.files.image;
-    //     const ImageData = await cloudinary.uploader
-    //         .upload(file.tempFilePath)
-    //         .catch((error) => {
-    //             console.log(error);
-    //         });
-    //         console.log(ImageData);
-    //     res.json({
-    //         success: 1,
-    //         image_url: ImageData.secure_url,
-    //     })
-})
+// router.post('/images/upload', async (req, res) => {
+//     try {
+//         const { imageUrl } = req.body;
+//         // console.log(image);  //working properly
+//         const imageData = await cloudinary.uploader
+//             .upload(imageUrl)
+//             .catch((error) => {
+//                 console.log(error);
+//             });
+//         console.log(imageData);
+//         let images = await Image.find({});
+//         let id;
+//         if (images.length > 0) {
+//             let last_image_array = images.slice(-1);
+//             let last_image = last_image_array[0];
+//             id = last_image.id + 1;
+//         }
+//         else {
+//             id = 1;
+//         }
+//         // Create a new Image instance with the URL
+//         const image = new Image({
+//             id: id,
+//             image_url: imageData.secure_url
+//         }); // Ensure the field name matches your schema
+//         const savedImageUrl = await image.save();
+
+//         // Send the response with the saved image URL
+//         res.json({
+//             success: true,
+//             image_url: imageData.secure_url, // Return the saved image URL
+//         });
+
+//     } catch (error) {
+//         res.send({ "error": `Unable to upload image: ${error}` });
+//     }
+//     // res.json({
+//     //     success: 1,
+//     //     image_url: `/images/${req.file.filename}`
+//     // })
+//     //     const file = req.files.image;
+//     //     const ImageData = await cloudinary.uploader
+//     //         .upload(file.tempFilePath)
+//     //         .catch((error) => {
+//     //             console.log(error);
+//     //         });
+//     //         console.log(ImageData);
+//     //     res.json({
+//     //         success: 1,
+//     //         image_url: ImageData.secure_url,
+//     //     })
+// })
 
 // const storage = multer.memoryStorage();
 // const upload = multer({ storage: storage });
@@ -74,36 +95,37 @@ router.post('/addproject', async (req, res) => {
         //         console.log(error);
         //     });
 
-            let projects = await Project.find({});
-            let id;
-            if (projects.length > 0) {
-                let last_project_array = projects.slice(-1);
-                let last_project = last_project_array[0];
-                id = last_project.id + 1;
-            }
-            else {
-                id = 1;
-            }
-            const project = new Project({
-                id: id,
-                title: req.body.title,
-                description: req.body.description,
-                content: req.body.content,
-                image: req.body.image,
-                // image: ImageData.secure_url,
-            });
-            await project.save();
-            console.log(project);
-            console.log("Saved");
-            res.json({
-                success: true,
-                title: req.body.title,
-            })
-        } catch (error) {
-            console.error(error.message);
-            res.status(500).send("Internal Server Error");
+        let projects = await Project.find({});
+        let id;
+        if (projects.length > 0) {
+            let last_project_array = projects.slice(-1);
+            let last_project = last_project_array[0];
+            id = last_project.id + 1;
         }
-    });
+        else {
+            id = 1;
+        }
+        const project = new Project({
+            id: id,
+            title: req.body.title,
+            description: req.body.description,
+            content: req.body.content,
+            imageUrl: req.body.imageUrl,
+            // image: req.body.image,
+            // image: ImageData.secure_url,
+        });
+        const savedProject = await project.save();
+        console.log(savedProject);
+        console.log("Saved");
+        res.json({
+            success: true,
+            title: req.body.title,
+        })
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
 
 
@@ -194,6 +216,7 @@ router.post('/deleteproject', async (req, res) => {
 
     try {
         await Project.findOneAndDelete({ id: req.body.id });
+        await Image.findOneAndDelete({ id: req.body.id });
         console.log("Project Deleted");
         res.json({
             success: true,
