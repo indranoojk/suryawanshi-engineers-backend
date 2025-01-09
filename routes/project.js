@@ -88,13 +88,7 @@ const path = require('path');
 router.post('/addproject', async (req, res) => {
 
     try {
-        // const file = req.files.image;
-        // const ImageData = await cloudinary.uploader
-        //     .upload(file.tempFilePath)
-        //     .catch((error) => {
-        //         console.log(error);
-        //     });
-
+        const { title, description, content, image } = req.body;
         let projects = await Project.find({});
         let id;
         if (projects.length > 0) {
@@ -107,20 +101,20 @@ router.post('/addproject', async (req, res) => {
         }
         const project = new Project({
             id: id,
-            title: req.body.title,
-            description: req.body.description,
-            content: req.body.content,
-            imageUrl: req.body.imageUrl,
-            // image: req.body.image,
+            title,
+            description,
+            content,
+            image,
             // image: ImageData.secure_url,
         });
         const savedProject = await project.save();
         console.log(savedProject);
         console.log("Saved");
-        res.json({
-            success: true,
-            title: req.body.title,
-        })
+        // res.json({
+        //     success: true,
+        //     title: req.body.title,
+        // })
+        res.json(savedProject);
     } catch (error) {
         console.error(error.message);
         res.status(500).send("Internal Server Error");

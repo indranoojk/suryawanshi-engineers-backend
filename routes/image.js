@@ -60,57 +60,90 @@ cloudinary.config({
     api_secret: process.env.API_SECRET,
 });
 
+// router.post('/upload', async (req, res) => {
+//     try {
+//         const { imageUrl } = req.body;
+//         // console.log(image);  //working properly
+//         const imageData = await cloudinary.uploader
+//             .upload(imageUrl)
+//             .catch((error) => {
+//                 console.log(error);
+//             });
+//         console.log(imageData);
+//         let images = await Image.find({});
+//         let id;
+//         if (images.length > 0) {
+//             let last_image_array = images.slice(-1);
+//             let last_image = last_image_array[0];
+//             id = last_image.id + 1;
+//         }
+//         else {
+//             id = 1;
+//         }
+//         // Create a new Image instance with the URL
+//         const image = new Image({
+//             id: id,
+//             image_url: imageData.secure_url
+//         }); // Ensure the field name matches your schema
+//         const savedImageUrl = await image.save();
+
+//         // Send the response with the saved image URL
+//         res.json({
+//             success: true,
+//             image_url: imageData.secure_url, // Return the saved image URL
+//         });
+
+//     } catch (error) {
+//         res.send({ "error": `Unable to upload image: ${error}` });
+//     }
+//     // res.json({
+//     //     success: 1,
+//     //     image_url: `/images/${req.file.filename}`
+//     // })
+//     //     const file = req.files.image;
+//     //     const ImageData = await cloudinary.uploader
+//     //         .upload(file.tempFilePath)
+//     //         .catch((error) => {
+//     //             console.log(error);
+//     //         });
+//     //         console.log(ImageData);
+//     //     res.json({
+//     //         success: 1,
+//     //         image_url: ImageData.secure_url,
+//     //     })
+// })
+
 router.post('/upload', async (req, res) => {
     try {
-        const { imageUrl } = req.body;
-        // console.log(image);  //working properly
-        const imageData = await cloudinary.uploader
-            .upload(imageUrl)
-            .catch((error) => {
-                console.log(error);
-            });
-        console.log(imageData);
-        let images = await Image.find({});
-        let id;
-        if (images.length > 0) {
-            let last_image_array = images.slice(-1);
-            let last_image = last_image_array[0];
-            id = last_image.id + 1;
+        const { imageLink } = req.body.imageLink;
+
+        // Check if imageUrl is a string
+        if (typeof imageLink !== 'string') {
+            return res.status(400).json({ error: 'Invalid image URL provided.' });
         }
-        else {
-            id = 1;
+
+        // Upload the image to Cloudinary
+        const imageData = await cloudinary.uploader.upload(imageLink);
+        console.log('Image Data:', imageData); // Log the image data
+
+        // Check if imageData is defined
+        if (!imageData || !imageData.secure_url) {
+            return res.status(500).json({ error: 'Image upload failed, no secure URL returned.' });
         }
+
         // Create a new Image instance with the URL
-        const image = new Image({
-            id: id,
-            image_url: imageData.secure_url
-        }); // Ensure the field name matches your schema
+        const image = new Image({ image_url: imageData.secure_url });
         const savedImageUrl = await image.save();
 
         // Send the response with the saved image URL
-        res.json({
-            success: true,
-            image_url: imageData.secure_url, // Return the saved image URL
+        return res.json({
+            success: 1,
+            image_url: savedImageUrl.image_url,
         });
-
     } catch (error) {
-        res.send({ "error": `Unable to upload image: ${error}` });
+        console.error('Upload Error:', error); // Log the error for debugging
+        return res.status(500).json({ error: `Unable to upload image: ${error.message}` });
     }
-    // res.json({
-    //     success: 1,
-    //     image_url: `/images/${req.file.filename}`
-    // })
-    //     const file = req.files.image;
-    //     const ImageData = await cloudinary.uploader
-    //         .upload(file.tempFilePath)
-    //         .catch((error) => {
-    //             console.log(error);
-    //         });
-    //         console.log(ImageData);
-    //     res.json({
-    //         success: 1,
-    //         image_url: ImageData.secure_url,
-    //     })
-})
+});
 
 module.exports = router
